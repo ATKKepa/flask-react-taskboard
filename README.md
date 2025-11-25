@@ -139,6 +139,13 @@ pytest
 4. Configure environment variables (`FLASK_ENV`, upload paths, secrets, etc.).
 5. Set up persistent storage for `todo.db` and `uploaded_files/uploads`.
 
+## CI/CD Automation
+
+- GitHub Actions workflow `.github/workflows/ci.yml` runs on every push, pull request, or manual dispatch and cancels superseded runs per branch.
+- Frontend job (Node 20): `npm ci`, lint with zero tolerated warnings, `npm run build`, then uploads the `client/dist` artifact for download from the Actions run.
+- Backend job (Python 3.11): installs `server/requirements.txt`, compiles all Python sources to catch syntax errors early, and imports the Flask app to verify dependencies.
+- Dependency caching is enabled for npm and pip based on `client/package-lock.json` and `server/requirements.txt` to keep runs fast.
+- Run the same checks locally: `cd client && npm ci && npm run lint -- --max-warnings=0 && npm run build`, plus `python -m pip install -r server/requirements.txt` and `python -m compileall server`.
 
 ## License
 
